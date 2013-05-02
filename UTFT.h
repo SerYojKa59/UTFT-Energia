@@ -131,18 +131,28 @@
 #define VGA_FUCHSIA		0xF81F
 #define VGA_PURPLE		0x8010
 
-#if defined(__AVR__)
-	#include "Arduino.h"
-	#include "HW_AVR_defines.h"
-#elif defined(__PIC32MX__)
-	#include "WProgram.h"
-	#include "HW_PIC32_defines.h"
-#elif defined(__arm__)
-	#include "Arduino.h"
-	#include "HW_ARM_defines.h"
-#elif defined(__MSP430__)
+#if defined(ENERGIA)
 	#include "Energia.h"
-	#include "HW_MSP430_defines.h"
+	#if defined(__LM4F120H5QR__)
+		#include "HW_LM4F_defines.h"
+	#elif defined(__MSP430__)
+		#include "HW_MSP430_defines.h"
+	#else
+		#error "unknown Energia target"
+	#endif
+#elif defined(ARDUINO)
+	#if defined(__AVR__)
+		#include "Arduino.h"
+		#include "HW_AVR_defines.h"
+	#elif defined(__arm__)
+		#include "Arduino.h"
+		#include "HW_ARM_defines.h"
+	#elif defined(__PIC32MX__)
+		#include "WProgram.h"
+		#include "HW_PIC32_defines.h"
+	#else
+		#error "unknown Arduino target"
+	#endif
 #endif
 
 struct _current_font
@@ -198,9 +208,11 @@ class UTFT
 		byte orient;
 		long disp_x_size, disp_y_size;
 		byte display_model, display_transfer_mode, display_serial_mode;
-		regtype *P_RS, *P_WR, *P_CS, *P_RST, *P_SDA, *P_SCL, *P_ALE;
+		regtype P_RS, P_WR, P_CS, P_RST, P_SDA, P_SCL, P_ALE;
 		regsize B_RS, B_WR, B_CS, B_RST, B_SDA, B_SCL, B_ALE;
+		byte RS, WR, CS, RST, SER;
 		_current_font	cfont;
+		void initPins();
 
 		void LCD_Writ_Bus(char VH,char VL, byte mode);
 		void LCD_Write_COM(char VL);

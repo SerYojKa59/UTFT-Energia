@@ -16,7 +16,7 @@
 #define fontbyte(x) cfont.font[x]  
 
 #define PROGMEM
-#define regtype volatile uint32_t
-#define regsize uint16_t
-#define bitmapdatatype unsigned short*
 
+typedef volatile uint32_t *regtype;
+typedef uint16_t regsize;
+typedef unsigned short *bitmapdatatype;

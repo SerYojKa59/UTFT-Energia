@@ -13,6 +13,7 @@
 
 #define pgm_read_word(data) *data
 #define pgm_read_byte(data) *data
-#define regtype volatile uint32_t
-#define regsize uint32_t
-#define bitmapdatatype unsigned short*
+
+typedef volatile uint32_t *regtype;
+typedef uint32_t regsize;
+typedef unsigned short *bitmapdatatype;

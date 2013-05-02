@@ -46,7 +46,7 @@
 */
 
 #include "UTFT.h"
-#if defined(__MSP430__)
+#if defined(ENERGIA)
 	#include <pins_energia.h>
 #else
 	#include <pins_arduino.h>
@@ -82,6 +82,9 @@
 	#if defined(__SAM3X8E__)
 		#pragma message("Compiling for Arduino Due (AT91SAM3X8E)...")
 		#include "HW_SAM3X8E.h"
+	#elif defined(__LM4F120H5QR__)
+		#pragma message("Compiling for Stellarpad (LM4F120H5QR)...")
+		#include "HW_LM4F120H5QR.h"
 	#else
 		#error "Unsupported ARM MCU!"
 	#endif
@@ -95,7 +98,7 @@ UTFT::UTFT()
 {
 }
 
-UTFT::UTFT(byte model, int RS, int WR,int CS, int RST, int SER)
+UTFT::UTFT(byte model, int RS_, int WR_,int CS_, int RST_, int SER_)
 { 
 	switch (model)
 	{
@@ -204,7 +207,59 @@ UTFT::UTFT(byte model, int RS, int WR,int CS, int RST, int SER)
 			break;
 	}
 	display_model=model;
+	CS = CS_;
+	RS = RS_;
+	WR = WR_;
+	RST = RST_;
+	SER = SER_;
 
+//	initPins();
+}
+
+void UTFT::LCD_Write_COM(char VL)  
+{   
+	if (display_transfer_mode!=1)
+	{
+		cbi(P_RS, B_RS);
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+	}
+	else
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+}
+
+void UTFT::LCD_Write_DATA(char VH,char VL)
+{
+	if (display_transfer_mode!=1)
+	{
+		sbi(P_RS, B_RS);
+		LCD_Writ_Bus(VH,VL,display_transfer_mode);
+	}
+	else
+	{
+		LCD_Writ_Bus(0x01,VH,display_transfer_mode);
+		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
+	}
+}
+
+void UTFT::LCD_Write_DATA(char VL)
+{
+	if (display_transfer_mode!=1)
+	{
+		sbi(P_RS, B_RS);
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+	}
+	else
+		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
+}
+
+void UTFT::LCD_Write_COM_DATA(char com1,int dat1)
+{
+     LCD_Write_COM(com1);
+     LCD_Write_DATA(dat1>>8,dat1);
+}
+
+void UTFT::initPins()
+{
 	if (display_transfer_mode!=1)
 	{
 		_set_direction_registers(display_transfer_mode);
@@ -253,50 +308,10 @@ UTFT::UTFT(byte model, int RS, int WR,int CS, int RST, int SER)
 	}
 }
 
-void UTFT::LCD_Write_COM(char VL)  
-{   
-	if (display_transfer_mode!=1)
-	{
-		cbi(P_RS, B_RS);
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-	}
-	else
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-}
-
-void UTFT::LCD_Write_DATA(char VH,char VL)
-{
-	if (display_transfer_mode!=1)
-	{
-		sbi(P_RS, B_RS);
-		LCD_Writ_Bus(VH,VL,display_transfer_mode);
-	}
-	else
-	{
-		LCD_Writ_Bus(0x01,VH,display_transfer_mode);
-		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
-	}
-}
-
-void UTFT::LCD_Write_DATA(char VL)
-{
-	if (display_transfer_mode!=1)
-	{
-		sbi(P_RS, B_RS);
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-	}
-	else
-		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
-}
-
-void UTFT::LCD_Write_COM_DATA(char com1,int dat1)
-{
-     LCD_Write_COM(com1);
-     LCD_Write_DATA(dat1>>8,dat1);
-}
-
 void UTFT::InitLCD(byte orientation)
 {
+	// moved from ctor
+	initPins();
 	orient=orientation;
 	_hw_special_init();
 
@@ -367,8 +382,6 @@ void UTFT::InitLCD(byte orientation)
 
 void UTFT::setXY(word x1, word y1, word x2, word y2)
 {
-	int tmp;
-
 	if (orient==LANDSCAPE)
 	{
 		swap(word, x1, y1);
@@ -438,8 +451,6 @@ void UTFT::clrXY()
 
 void UTFT::drawRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 	{
 		swap(int, x1, x2);
@@ -457,8 +468,6 @@ void UTFT::drawRect(int x1, int y1, int x2, int y2)
 
 void UTFT::drawRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 	{
 		swap(int, x1, x2);
@@ -482,8 +491,6 @@ void UTFT::drawRoundRect(int x1, int y1, int x2, int y2)
 
 void UTFT::fillRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 	{
 		swap(int, x1, x2);
@@ -531,8 +538,6 @@ void UTFT::fillRect(int x1, int y1, int x2, int y2)
 
 void UTFT::fillRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 	{
 		swap(int, x1, x2);
@@ -1184,7 +1189,6 @@ void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int sca
 {
 	unsigned int col;
 	int tx, ty, tc, tsx, tsy;
-	byte r, g, b;
 
 	if (scale==1)
 	{
@@ -1258,7 +1262,6 @@ void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int deg
 {
 	unsigned int col;
 	int tx, ty, newx, newy;
-	byte r, g, b;
 	double radian;
 	radian=deg*0.0175;  
 
