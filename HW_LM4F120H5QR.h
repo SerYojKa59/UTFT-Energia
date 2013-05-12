@@ -8,7 +8,7 @@ void UTFT::_hw_special_init()
 	sbi(P_WR, B_WR);
 }
 
-inline void write_byte_lo(unsigned char ch)
+inline void write_byte_hi(unsigned char ch)
 {
 /*
 	digitalWrite(PB_0, ch & 0x01);
@@ -23,7 +23,7 @@ inline void write_byte_lo(unsigned char ch)
 	ROM_GPIOPinWrite(GPIO_PORTB_BASE, 0xff, ch);
 }
 
-inline void write_byte_hi(unsigned char ch)
+inline void write_byte_lo(unsigned char ch)
 {
 	ROM_GPIOPinWrite(GPIO_PORTF_BASE, BV(2) | BV(3), (ch & 0x03) << 2);
 	ROM_GPIOPinWrite(GPIO_PORTD_BASE, BV(2) | BV(3), (ch & 0x0c));
@@ -32,7 +32,6 @@ inline void write_byte_hi(unsigned char ch)
 /*
 	digitalWrite(PF_2, ch & 0x01);
 	digitalWrite(PF_3, ch & 0x02);
-
 	digitalWrite(PD_2, ch & 0x04);
 	digitalWrite(PD_3, ch & 0x08);
 
@@ -106,9 +105,9 @@ void UTFT::LCD_Writ_Bus(char VH,char VL, byte mode)
 			pulse_low(P_SCL, B_SCL);
 		break;
 	case 8:
-		write_byte_lo(VH);
+		write_byte_hi(VH);
 		pulse_low(P_WR, B_WR);
-		write_byte_lo(VL);
+		write_byte_hi(VL);
 		pulse_low(P_WR, B_WR);
 		break;
 	case 16:
@@ -185,7 +184,7 @@ void UTFT::_fast_fill_16(int ch, int cl, long pix)
 void UTFT::_fast_fill_8(int ch, long pix)
 {
 	long blocks;
-	write_byte_lo(ch);
+	write_byte_hi(ch);
 
 	blocks = pix/16;
 	for (int i=0; i<blocks; i++)
