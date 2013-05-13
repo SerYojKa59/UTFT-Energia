@@ -10,36 +10,13 @@ void UTFT::_hw_special_init()
 
 inline void write_byte_hi(unsigned char ch)
 {
-/*
-	digitalWrite(PB_0, ch & 0x01);
-	digitalWrite(PB_1, ch & 0x02);
-	digitalWrite(PB_2, ch & 0x04);
-	digitalWrite(PB_3, ch & 0x08);
-	digitalWrite(PB_4, ch & 0x10);
-	digitalWrite(PB_5, ch & 0x20);
-	digitalWrite(PB_6, ch & 0x40);
-	digitalWrite(PB_7, ch & 0x80);
-*/
-	ROM_GPIOPinWrite(GPIO_PORTB_BASE, 0xff, ch);
+	ROM_GPIOPinWrite(GPIO_PORTE_BASE, 0x0f, ch);
+	ROM_GPIOPinWrite(GPIO_PORTC_BASE, 0xf0, ch);
 }
 
 inline void write_byte_lo(unsigned char ch)
 {
-	ROM_GPIOPinWrite(GPIO_PORTF_BASE, BV(2) | BV(3), (ch & 0x03) << 2);
-	ROM_GPIOPinWrite(GPIO_PORTD_BASE, BV(2) | BV(3), (ch & 0x0c));
-	ROM_GPIOPinWrite(GPIO_PORTE_BASE, BV(0) | BV(1) | BV(2) | BV(3), (ch & 0xf0) >> 4); 
-
-/*
-	digitalWrite(PF_2, ch & 0x01);
-	digitalWrite(PF_3, ch & 0x02);
-	digitalWrite(PD_2, ch & 0x04);
-	digitalWrite(PD_3, ch & 0x08);
-
-	digitalWrite(PE_0, ch & 0x10);
-	digitalWrite(PE_1, ch & 0x20);
-	digitalWrite(PE_2, ch & 0x40);
-	digitalWrite(PE_3, ch & 0x80);
-*/
+	ROM_GPIOPinWrite(GPIO_PORTB_BASE, 0xff, ch);
 }
 
 void UTFT::LCD_Writ_Bus(char VH,char VL, byte mode)
@@ -125,24 +102,24 @@ void UTFT::_set_direction_registers(byte mode)
 {
 	if (mode!=LATCHED_16)
 	{
-		pinMode(PB_0, OUTPUT);
-		pinMode(PB_1, OUTPUT);
-		pinMode(PB_2, OUTPUT);
-		pinMode(PB_3, OUTPUT);
-		pinMode(PB_4, OUTPUT);
-		pinMode(PB_5, OUTPUT);
-		pinMode(PB_6, OUTPUT);
-		pinMode(PB_7, OUTPUT);
+		pinMode(PE_0, OUTPUT);
+		pinMode(PE_1, OUTPUT);
+		pinMode(PE_2, OUTPUT);
+		pinMode(PE_3, OUTPUT);
+		pinMode(PC_4, OUTPUT);
+		pinMode(PC_5, OUTPUT);
+		pinMode(PC_6, OUTPUT);
+		pinMode(PC_7, OUTPUT);
 
 		if (mode == 16) {
-			pinMode(PF_2, OUTPUT);
-			pinMode(PF_3, OUTPUT);
-			pinMode(PD_2, OUTPUT);
-			pinMode(PD_3, OUTPUT);
-			pinMode(PE_0, OUTPUT);
-			pinMode(PE_1, OUTPUT);
-			pinMode(PE_2, OUTPUT);
-			pinMode(PE_3, OUTPUT);
+			pinMode(PB_0, OUTPUT);
+			pinMode(PB_1, OUTPUT);
+			pinMode(PB_2, OUTPUT);
+			pinMode(PB_3, OUTPUT);
+			pinMode(PB_4, OUTPUT);
+			pinMode(PB_5, OUTPUT);
+			pinMode(PB_6, OUTPUT);
+			pinMode(PB_7, OUTPUT);
 		}
 	}
 }
