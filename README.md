@@ -7,3 +7,14 @@ Tips about porting it to different platforms can be found [here](http://andresva
 
 # License
 [CC BY-NC-SA 3.0](https://github.com/andresv/UTFT-Energia/blob/master/License%20-%20CC%20BY-NC-SA%203.0%20-%20Legal.pdf)
+
+Ported to Stellaris by Stephen Crane. 
+Tested on S6D1211 in 8-bit mode and SSD1289 in 16-bit mode.
+
+8-bit mode:
+D0-D7=GND; D8-D15=PE0-3+PC4-7; RS=PA_5; WR=PA_7; CS=PA_6; RST=PD_6; 
+RD=VREF; VCC=VREF.
+
+16-bit mode:
+D0-D7=PB0-PB7; D8-D15=PE0-3+PC4-7; RS=PA_5; WR=PA_7; CS=PA_6; RST=PD_6; 
+RD=VREF; VCC=VREF.
