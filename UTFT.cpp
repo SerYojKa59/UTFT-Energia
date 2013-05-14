@@ -1,6 +1,6 @@
 /*
   UTFT.cpp - Arduino/chipKit library support for Color TFT LCD Boards
-  Copyright (C)2010-2012 Henning Karlsen. All right reserved
+  Copyright (C)2010-2013 Henning Karlsen. All right reserved
   
   This library is the continuation of my ITDB02_Graph, ITDB02_Graph16
   and RGB_GLCD libraries for Arduino and chipKit. As the number of 
@@ -31,18 +31,8 @@
   http://electronics.henningkarlsen.com/contact.php.
 
   This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  modify it under the terms of the CC BY-NC-SA 3.0 license.
+  Please see the included documents for further information.
 */
 
 #include "UTFT.h"
@@ -55,42 +45,46 @@
 // Include hardware-specific functions for the correct MCU
 #if defined(__AVR__)
 	#include <avr/pgmspace.h>
+	#include "hardware/avr/HW_AVR.h"
 	#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-		#include "HW_ATmega1280.h" 
+		#include "hardware/avr/HW_ATmega1280.h" 
 	#elif defined(__AVR_ATmega328P__)
-		#include "HW_ATmega328P.h"
+		#include "hardware/avr/HW_ATmega328P.h"
 	#elif defined(__AVR_ATmega32U4__)
-		#include "HW_ATmega32U4.h"
+		#include "hardware/avr/HW_ATmega32U4.h"
 	#elif defined(__AVR_ATmega168__)
 		#error "ATmega168 MCUs are not supported because they have too little flash memory!"
 	#else
 		#error "Unsupported AVR MCU!"
 	#endif
 #elif defined(__PIC32MX__)
-  #if defined(__32MX320F128H__)
-    #pragma message("Compiling for chipKIT UNO32 (__32MX320F128H__)")
-	#include "HW_PIC32MX320F128H.h"
-  #elif defined(__32MX340F512H__)
-    #error "chipKIT uC32 (__32MX340F512H__) is not supported."
-  #elif defined(__32MX795F512L__)
-    #pragma message("Compiling for chipKIT MAX32 (__32MX795F512L__)")
-	#include "HW_PIC32MX795F512L.h"
-  #else
-    #error "Unsupported PIC32 MCU!"
-  #endif  
+	#include "hardware/pic32/HW_PIC32.h"
+	#if defined(__32MX320F128H__)
+		#pragma message("Compiling for chipKIT UNO32 (__32MX320F128H__)")
+		#include "hardware/pic32/HW_PIC32MX320F128H.h"
+	#elif defined(__32MX340F512H__)
+		#error "chipKIT uC32 (__32MX340F512H__) is not supported."
+		#pragma message("Compiling for chipKIT uC32 (__32MX340F512H__)")
+		#include "hardware/pic32/HW_PIC32MX340F512H.h"
+	#elif defined(__32MX795F512L__)
+		#pragma message("Compiling for chipKIT MAX32 (__32MX795F512L__)")
+		#include "hardware/pic32/HW_PIC32MX795F512L.h"
+	#else
+		#error "Unsupported PIC32 MCU!"
+	#endif  
 #elif defined(__arm__)
 	#if defined(__SAM3X8E__)
 		#pragma message("Compiling for Arduino Due (AT91SAM3X8E)...")
-		#include "HW_SAM3X8E.h"
+		#include "hardware/arm/HW_SAM3X8E.h"
 	#elif defined(__LM4F120H5QR__)
 		#pragma message("Compiling for Stellarpad (LM4F120H5QR)...")
-		#include "HW_LM4F120H5QR.h"
+		#include "hardware/lm4f/HW_LM4F120H5QR.h"
 	#else
 		#error "Unsupported ARM MCU!"
 	#endif
 #elif defined(__MSP430__)
 	#pragma message("Compiling for MSP430FR5739 Garage board...")
-	#include "HW_MSP430FR5739.h"
+	#include "hardware/msp430/HW_MSP430FR5739.h"
 #endif
 #include "memorysaver.h"
 
@@ -98,7 +92,7 @@ UTFT::UTFT()
 {
 }
 
-UTFT::UTFT(byte model, int RS_, int WR_,int CS_, int RST_, int SER_)
+UTFT::UTFT(byte model, int RS_, int WR_, int CS_, int RST_, int SER_)
 { 
 	switch (model)
 	{
@@ -175,6 +169,11 @@ UTFT::UTFT(byte model, int RS_, int WR_,int CS_, int RST_, int SER_)
 			disp_y_size=799;
 			display_transfer_mode=16;
 			break;
+		case SSD1963_800ALT:
+			disp_x_size=479;
+			disp_y_size=799;
+			display_transfer_mode=16;
+			break;
 		case S6D1121_8:
 			disp_x_size=239;
 			disp_y_size=319;
@@ -205,6 +204,12 @@ UTFT::UTFT(byte model, int RS_, int WR_,int CS_, int RST_, int SER_)
 			disp_y_size=319;
 			display_transfer_mode=8;
 			break;
+		case ILI9481:
+			disp_x_size=319;
+			disp_y_size=479;
+			display_transfer_mode=16;
+			break;
+
 	}
 	display_model=model;
 	CS = CS_;
@@ -214,48 +219,6 @@ UTFT::UTFT(byte model, int RS_, int WR_,int CS_, int RST_, int SER_)
 	SER = SER_;
 
 //	initPins();
-}
-
-void UTFT::LCD_Write_COM(char VL)  
-{   
-	if (display_transfer_mode!=1)
-	{
-		cbi(P_RS, B_RS);
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-	}
-	else
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-}
-
-void UTFT::LCD_Write_DATA(char VH,char VL)
-{
-	if (display_transfer_mode!=1)
-	{
-		sbi(P_RS, B_RS);
-		LCD_Writ_Bus(VH,VL,display_transfer_mode);
-	}
-	else
-	{
-		LCD_Writ_Bus(0x01,VH,display_transfer_mode);
-		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
-	}
-}
-
-void UTFT::LCD_Write_DATA(char VL)
-{
-	if (display_transfer_mode!=1)
-	{
-		sbi(P_RS, B_RS);
-		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
-	}
-	else
-		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
-}
-
-void UTFT::LCD_Write_COM_DATA(char com1,int dat1)
-{
-     LCD_Write_COM(com1);
-     LCD_Write_DATA(dat1>>8,dat1);
 }
 
 void UTFT::initPins()
@@ -306,6 +269,48 @@ void UTFT::initPins()
 		pinMode(CS,OUTPUT);
 		pinMode(RST,OUTPUT);
 	}
+}
+
+void UTFT::LCD_Write_COM(char VL)  
+{   
+	if (display_transfer_mode!=1)
+	{
+		cbi(P_RS, B_RS);
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+	}
+	else
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+}
+
+void UTFT::LCD_Write_DATA(char VH,char VL)
+{
+	if (display_transfer_mode!=1)
+	{
+		sbi(P_RS, B_RS);
+		LCD_Writ_Bus(VH,VL,display_transfer_mode);
+	}
+	else
+	{
+		LCD_Writ_Bus(0x01,VH,display_transfer_mode);
+		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
+	}
+}
+
+void UTFT::LCD_Write_DATA(char VL)
+{
+	if (display_transfer_mode!=1)
+	{
+		sbi(P_RS, B_RS);
+		LCD_Writ_Bus(0x00,VL,display_transfer_mode);
+	}
+	else
+		LCD_Writ_Bus(0x01,VL,display_transfer_mode);
+}
+
+void UTFT::LCD_Write_COM_DATA(char com1,int dat1)
+{
+     LCD_Write_COM(com1);
+     LCD_Write_DATA(dat1>>8,dat1);
 }
 
 void UTFT::InitLCD(byte orientation)
@@ -365,11 +370,17 @@ void UTFT::InitLCD(byte orientation)
 #ifndef DISABLE_SSD1963_800
 	#include "tft_drivers/ssd1963/800/initlcd.h"
 #endif
+#ifndef DISABLE_SSD1963_800ALT
+	#include "tft_drivers/ssd1963/800alt/initlcd.h"
+#endif
 #ifndef DISABLE_S6D1121
 	#include "tft_drivers/s6d1121/initlcd.h"
 #endif
 #ifndef DISABLE_ILI9320
 	#include "tft_drivers/ili9320/initlcd.h"
+#endif
+#ifndef DISABLE_ILI9481
+	#include "tft_drivers/ili9481/initlcd.h"
 #endif
 	}
 
@@ -378,6 +389,7 @@ void UTFT::InitLCD(byte orientation)
 	setColor(255, 255, 255);
 	setBackColor(0, 0, 0);
 	cfont.font=0;
+	_transparent = false;
 }
 
 void UTFT::setXY(word x1, word y1, word x2, word y2)
@@ -432,11 +444,17 @@ void UTFT::setXY(word x1, word y1, word x2, word y2)
 #ifndef DISABLE_SSD1963_800
 	#include "tft_drivers/ssd1963/800/setxy.h"
 #endif
+#ifndef DISABLE_SSD1963_800ALT
+	#include "tft_drivers/ssd1963/800alt/setxy.h"
+#endif
 #ifndef DISABLE_S6D1121
 	#include "tft_drivers/s6d1121/setxy.h"
 #endif
 #ifndef DISABLE_ILI9320
 	#include "tft_drivers/ili9320/setxy.h"
+#endif
+#ifndef DISABLE_ILI9481
+	#include "tft_drivers/ili9481/setxy.h"
 #endif
 	}
 }
@@ -718,12 +736,19 @@ void UTFT::setBackColor(byte r, byte g, byte b)
 {
 	bch=((r&248)|g>>5);
 	bcl=((g&28)<<3|b>>3);
+	_transparent=false;
 }
 
-void UTFT::setBackColor(word color)
+void UTFT::setBackColor(uint32_t color)
 {
-	bch=byte(color>>8);
-	bcl=byte(color & 0xFF);
+	if (color==VGA_TRANSPARENT)
+		_transparent=true;
+	else
+	{
+		bch=byte(color>>8);
+		bcl=byte(color & 0xFF);
+		_transparent=false;
+	}
 }
 
 word UTFT::getBackColor()
@@ -869,41 +894,19 @@ void UTFT::printChar(byte c, int x, int y)
 
 	cbi(P_CS, B_CS);
   
-	if (orient==PORTRAIT)
+	if (!_transparent)
 	{
-		setXY(x,y,x+cfont.x_size-1,y+cfont.y_size-1);
+		if (orient==PORTRAIT)
+		{
+			setXY(x,y,x+cfont.x_size-1,y+cfont.y_size-1);
 	  
-		temp=((c-cfont.offset)*((cfont.x_size/8)*cfont.y_size))+4;
-		for(j=0;j<((cfont.x_size/8)*cfont.y_size);j++)
-		{
-			ch=pgm_read_byte(&cfont.font[temp]);
-			for(i=0;i<8;i++)
-			{   
-				if((ch&(1<<(7-i)))!=0)   
-				{
-					setPixel((fch<<8)|fcl);
-				} 
-				else
-				{
-					setPixel((bch<<8)|bcl);
-				}   
-			}
-			temp++;
-		}
-	}
-	else
-	{
-		temp=((c-cfont.offset)*((cfont.x_size/8)*cfont.y_size))+4;
-
-		for(j=0;j<((cfont.x_size/8)*cfont.y_size);j+=(cfont.x_size/8))
-		{
-			setXY(x,y+(j/(cfont.x_size/8)),x+cfont.x_size-1,y+(j/(cfont.x_size/8)));
-			for (int zz=(cfont.x_size/8)-1; zz>=0; zz--)
+			temp=((c-cfont.offset)*((cfont.x_size/8)*cfont.y_size))+4;
+			for(j=0;j<((cfont.x_size/8)*cfont.y_size);j++)
 			{
-				ch=pgm_read_byte(&cfont.font[temp+zz]);
+				ch=pgm_read_byte(&cfont.font[temp]);
 				for(i=0;i<8;i++)
 				{   
-					if((ch&(1<<i))!=0)   
+					if((ch&(1<<(7-i)))!=0)   
 					{
 						setPixel((fch<<8)|fcl);
 					} 
@@ -912,10 +915,57 @@ void UTFT::printChar(byte c, int x, int y)
 						setPixel((bch<<8)|bcl);
 					}   
 				}
+				temp++;
+			}
+		}
+		else
+		{
+			temp=((c-cfont.offset)*((cfont.x_size/8)*cfont.y_size))+4;
+	
+			for(j=0;j<((cfont.x_size/8)*cfont.y_size);j+=(cfont.x_size/8))
+			{
+				setXY(x,y+(j/(cfont.x_size/8)),x+cfont.x_size-1,y+(j/(cfont.x_size/8)));
+				for (int zz=(cfont.x_size/8)-1; zz>=0; zz--)
+				{
+					ch=pgm_read_byte(&cfont.font[temp+zz]);
+					for(i=0;i<8;i++)
+					{   
+						if((ch&(1<<i))!=0)   
+						{
+							setPixel((fch<<8)|fcl);
+						} 
+						else
+						{
+							setPixel((bch<<8)|bcl);
+						}   
+					}
+				}
+				temp+=(cfont.x_size/8);
+			}
+		}
+	}
+	else
+	{
+		temp=((c-cfont.offset)*((cfont.x_size/8)*cfont.y_size))+4;
+		for(j=0;j<cfont.y_size;j++) 
+		{
+			for (int zz=0; zz<(cfont.x_size/8); zz++)
+			{
+				ch=pgm_read_byte(&cfont.font[temp+zz]); 
+				for(i=0;i<8;i++)
+				{   
+					setXY(x+i+(zz*8),y+j,x+i+(zz*8)+1,y+j+1);
+	 
+					if((ch&(1<<(7-i)))!=0)   
+					{
+       						setPixel((fch<<8)|fcl);
+					} 
+				}
 			}
 			temp+=(cfont.x_size/8);
 		}
 	}
+
 	sbi(P_CS, B_CS);
 	clrXY();
 }
@@ -949,7 +999,8 @@ void UTFT::rotateChar(byte c, int x, int y, int pos, int deg)
 				} 
 				else  
 				{
-					setPixel((bch<<8)|bcl);
+					if (!_transparent)
+						setPixel((bch<<8)|bcl);
 				}   
 			}
 		}
@@ -1065,97 +1116,41 @@ void UTFT::printNumI(long num, int x, int y, int length, char filler)
 
 void UTFT::printNumF(double num, byte dec, int x, int y, char divider, int length, char filler)
 {
-	char buf[25];
 	char st[27];
 	boolean neg=false;
-	int c=0, f=0;
-	int c2;
-	long mult;
-	unsigned long inum;
-  
+
 	if (dec<1)
-	dec=1;
-	if (dec>5)
-	dec=5;
-	  
-	if (num==0)
+		dec=1;
+	else if (dec>5)
+		dec=5;
+
+	if (num<0)
+		neg = true;
+
+	_convert_float(st, num, length, dec);
+
+	if (divider != '.')
 	{
-		if (length!=0)
+		for (int i=0; i<sizeof(st); i++)
+			if (st[i]=='.')
+				st[i]=divider;
+	}
+
+	if (filler != ' ')
+	{
+		if (neg)
 		{
-			for (c=0; c<(length-2-dec); c++)
-				st[c]=filler;
-			st[c]=48;
-			st[c+1]=divider;
-			for (int i=0; i<dec; i++)
-				st[c+2+i]=48;
-			st[c+2+dec]=0;
+			st[0]='-';
+			for (int i=1; i<sizeof(st); i++)
+				if ((st[i]==' ') || (st[i]=='-'))
+					st[i]=filler;
 		}
 		else
 		{
-			st[0]=48;
-			st[1]=divider;
-			for (int i=0; i<dec; i++)
-				st[2+i]=48;
-			st[2+dec]=0;
+			for (int i=0; i<sizeof(st); i++)
+				if (st[i]==' ')
+					st[i]=filler;
 		}
-	}
-	else
-	{
-		if (num<0)
-		{
-			neg=true;
-			num=-num;
-		}
-	  
-		mult = 1;
-		for (int j = 0; j < dec; j++)
-			mult = mult * 10;
-		inum=long(num*mult + 0.5);
-	  
-		while (inum>0)
-		{
-			buf[c]=48+(inum % 10);
-			c++;
-			inum=(inum-(inum % 10))/10;
-		}
-		if ((num<1) and (num>0))
-		{
-			buf[c]=48;
-			c++;
-		}
-		while (c<(dec+1))
-		{
-			buf[c]=48;
-			c++;
-		}
-		buf[c]=0;
-	  
-		if (neg)
-		{
-			st[0]=45;
-		}
-	  
-		if (length>(c+neg-1))
-		{
-			for (int i=0; i<(length-c-neg-1); i++)
-			{
-				st[i+neg]=filler;
-				f++;
-			}
-		}
-
-		c2=neg;
-		for (int i=0; i<c; i++)
-		{
-			st[c2+f]=buf[c-i-1];
-			c2++;
-			if ((c-(c2-neg))==dec)
-			{
-				st[c2+f]=divider;
-				c2++;
-			}
-		}
-		st[c2+f]=0;
 	}
 
 	print(st,x,y);

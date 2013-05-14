@@ -1,10 +1,14 @@
-// Enable or disable the use of the AquaLEDSource All in One Super Screw Shield
+// CTE TFT LCD/SD Shield for Arduino Due
+// -------------------------------------
 // Uncomment the following line if you are using this shield
-//#define AQUALED_SHIELD 1
+//#define CTE_DUE_SHIELD 1
+//
+// For this shield: RS=25, WR=26, CS=27, RST=28
+//********************************************************************
 
 // *** Hardwarespecific defines ***
-#define cbi(reg, bitmask) (*(reg + 1)) = bitmask
-#define sbi(reg, bitmask) (*(reg + 2)) = bitmask
+#define cbi(reg, bitmask) *reg &= ~bitmask
+#define sbi(reg, bitmask) *reg |= bitmask
 #define pulse_high(reg, bitmask) sbi(reg, bitmask); cbi(reg, bitmask);
 #define pulse_low(reg, bitmask) cbi(reg, bitmask); sbi(reg, bitmask);
 
@@ -15,8 +19,8 @@
 
 #define fontbyte(x) cfont.font[x]  
 
-#define PROGMEM
-
+#define pgm_read_word(data) *data
+#define pgm_read_byte(data) *data
 typedef volatile uint32_t *regtype;
-typedef uint16_t regsize;
+typedef uint32_t regsize;
 typedef unsigned short *bitmapdatatype;

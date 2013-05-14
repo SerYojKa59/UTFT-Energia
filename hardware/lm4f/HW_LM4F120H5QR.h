@@ -189,3 +189,8 @@ void UTFT::_fast_fill_8(int ch, long pix)
 			pulse_low(P_WR, B_WR);pulse_low(P_WR, B_WR);
 		}
 }
+
+void UTFT::_convert_float(char *buf, double num, int width, byte prec)
+{
+	//	NYI
+}
