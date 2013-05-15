@@ -86,6 +86,9 @@
 	#if defined(__MSP430FR5739__)
 		#pragma message("Compiling for Fraunchpad (MSP430FR5739)...")
 		#include "hardware/msp430/HW_MSP430FR5739.h"
+	#elif defined(__MSP430G2553__)
+		#pragma message("Compiling for Launchpad (MSP430G2553)...")
+		#include "hardware/msp430/HW_MSP430G2553.h"
 	#else
 		#error "Unsupported MSP430 MCU!"
 	#endif
