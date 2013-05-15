@@ -83,8 +83,12 @@
 		#error "Unsupported ARM MCU!"
 	#endif
 #elif defined(__MSP430__)
-	#pragma message("Compiling for MSP430FR5739 Garage board...")
-	#include "hardware/msp430/HW_MSP430FR5739.h"
+	#if defined(__MSP430FR5739__)
+		#pragma message("Compiling for Fraunchpad (MSP430FR5739)...")
+		#include "hardware/msp430/HW_MSP430FR5739.h"
+	#else
+		#error "Unsupported MSP430 MCU!"
+	#endif
 #endif
 #include "memorysaver.h"
 
@@ -972,11 +976,11 @@ void UTFT::printChar(byte c, int x, int y)
 
 void UTFT::rotateChar(byte c, int x, int y, int pos, int deg)
 {
+#ifndef DISABLE_FLOATING_POINT
 	byte i,j,ch;
 	word temp; 
 	int newx,newy;
-	double radian;
-	radian=deg*0.0175;  
+	double radian=deg*0.0175;  
 
 	cbi(P_CS, B_CS);
 
@@ -1008,6 +1012,7 @@ void UTFT::rotateChar(byte c, int x, int y, int pos, int deg)
 	}
 	sbi(P_CS, B_CS);
 	clrXY();
+#endif
 }
 
 void UTFT::print(char *st, int x, int y, int deg)
@@ -1032,8 +1037,7 @@ void UTFT::print(char *st, int x, int y, int deg)
 	}
 
 	for (i=0; i<stl; i++)
-#ifdef DISABLE_CHAR_ROTATING
-		#pragma message("print char rotating disabled")
+#ifdef DISABLE_FLOATING_POINT
 		printChar(*st++, x + (i*(cfont.x_size)), y);
 #else
 		if (deg==0)
@@ -1114,6 +1118,7 @@ void UTFT::printNumI(long num, int x, int y, int length, char filler)
 	print(st,x,y);
 }
 
+#ifndef DISABLE_FLOATING_POINT
 void UTFT::printNumF(double num, byte dec, int x, int y, char divider, int length, char filler)
 {
 	char st[27];
@@ -1155,6 +1160,7 @@ void UTFT::printNumF(double num, byte dec, int x, int y, char divider, int lengt
 
 	print(st,x,y);
 }
+#endif
 
 void UTFT::setFont(uint8_t* font)
 {
@@ -1257,13 +1263,13 @@ void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int deg
 {
 	unsigned int col;
 	int tx, ty, newx, newy;
-	double radian;
-	radian=deg*0.0175;  
 
 	if (deg==0)
 		drawBitmap(x, y, sx, sy, data);
+#ifndef DISABLE_FLOATING_POINT
 	else
 	{
+		double radian=deg*0.0175;  
 		cbi(P_CS, B_CS);
 		for (ty=0; ty<sy; ty++)
 			for (tx=0; tx<sx; tx++)
@@ -1278,6 +1284,7 @@ void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int deg
 			}
 		sbi(P_CS, B_CS);
 	}
+#endif
 	clrXY();
 }
 

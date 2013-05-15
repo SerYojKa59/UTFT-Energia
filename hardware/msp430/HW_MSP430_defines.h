@@ -17,3 +17,4 @@
 typedef volatile uint8_t *regtype;
 typedef uint8_t regsize;
 typedef unsigned short *bitmapdatatype;
+#define DISABLE_FLOATING_POINT	1
