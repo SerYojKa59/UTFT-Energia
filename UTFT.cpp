@@ -92,6 +92,7 @@
 	#else
 		#error "Unsupported MSP430 MCU!"
 	#endif
+	#include "hardware/msp430/HW_MSP430.h"
 #endif
 #include "memorysaver.h"
 
@@ -1264,15 +1265,15 @@ void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int sca
 
 void UTFT::drawBitmap(int x, int y, int sx, int sy, bitmapdatatype data, int deg, int rox, int roy)
 {
-	unsigned int col;
-	int tx, ty, newx, newy;
-
 	if (deg==0)
 		drawBitmap(x, y, sx, sy, data);
 #ifndef DISABLE_FLOATING_POINT
 	else
 	{
+		unsigned int col;
+		int tx, ty, newx, newy;
 		double radian=deg*0.0175;  
+
 		cbi(P_CS, B_CS);
 		for (ty=0; ty<sy; ty++)
 			for (tx=0; tx<sx; tx++)
