@@ -15,7 +15,7 @@
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 
-UTFT myGLCD(SSD1289, PA_5, PA_7, PA_6, PD_6);   // Remember to change the model parameter to suit your display module!
+UTFT myGLCD(S6D1121_8, PA_5, PA_7, PA_6, PD_6);   // Remember to change the model parameter to suit your display module!
 
 void setup()
 {

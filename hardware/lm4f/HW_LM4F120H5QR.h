@@ -102,24 +102,12 @@ void UTFT::_set_direction_registers(byte mode)
 {
 	if (mode!=LATCHED_16)
 	{
-		pinMode(PE_0, OUTPUT);
-		pinMode(PE_1, OUTPUT);
-		pinMode(PE_2, OUTPUT);
-		pinMode(PE_3, OUTPUT);
-		pinMode(PC_4, OUTPUT);
-		pinMode(PC_5, OUTPUT);
-		pinMode(PC_6, OUTPUT);
-		pinMode(PC_7, OUTPUT);
+		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, 0x0f);
+		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, 0xf0);
 
-		if (mode == 16) {
-			pinMode(PB_0, OUTPUT);
-			pinMode(PB_1, OUTPUT);
-			pinMode(PB_2, OUTPUT);
-			pinMode(PB_3, OUTPUT);
-			pinMode(PB_4, OUTPUT);
-			pinMode(PB_5, OUTPUT);
-			pinMode(PB_6, OUTPUT);
-			pinMode(PB_7, OUTPUT);
+		if (mode == 16) 
+		{
+			ROM_GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, 0xff);
 		}
 	}
 }

@@ -6,7 +6,7 @@ Currently it is meant for [custom MSP430FR5739](https://github.com/andresv/indus
 Tips about porting it to different platforms can be found [here](http://andresvahter.wordpress.com/2013/04/07/how-to-add-energia-support-to-utft-library/).
 
 ### Stellaris
-Tested on S6D1211 in 8-bit mode and SSD1289 in 16-bit mode.
+Tested on S6D1121 in 8-bit mode and SSD1289 in 16-bit mode.
 
 * 8-bit mode:
 D0-D7=GND; D8-D15=PE0-3+PC4-7; RS=PA_5; WR=PA_7; CS=PA_6; RST=PD_6; 
