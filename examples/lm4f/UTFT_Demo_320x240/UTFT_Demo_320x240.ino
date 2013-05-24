@@ -15,7 +15,7 @@
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 
-UTFT myGLCD(S6D1121_8, PA_5, PA_7, PA_6, PD_6);   // Remember to change the model parameter to suit your display module!
+UTFT  myGLCD(SSD1289, PC_6, PC_5, PC_7, PC_4);   // Remember to change the model parameter to suit your display module!
 
 void setup()
 {
@@ -24,6 +24,11 @@ void setup()
 // Setup the LCD
   myGLCD.InitLCD();
   myGLCD.setFont(SmallFont);
+  
+  // turn on the backlight for Daniel Rebollo's boosterpack
+  // (see http://forum.stellarisiti.com/topic/626-ssd1289-32-320x240-tft-16bit-parallel-interface-touch-libraries/ )
+  pinMode(PD_6, OUTPUT);
+  digitalWrite(PD_6, HIGH);
 }
 
 void loop()

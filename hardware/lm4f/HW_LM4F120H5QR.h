@@ -10,8 +10,8 @@ void UTFT::_hw_special_init()
 
 inline void write_byte_hi(unsigned char ch)
 {
-	ROM_GPIOPinWrite(GPIO_PORTE_BASE, 0x0f, ch);
-	ROM_GPIOPinWrite(GPIO_PORTC_BASE, 0xf0, ch);
+	ROM_GPIOPinWrite(GPIO_PORTD_BASE, 0x0f, ch);
+	ROM_GPIOPinWrite(GPIO_PORTA_BASE, 0xf0, ch);
 }
 
 inline void write_byte_lo(unsigned char ch)
@@ -102,8 +102,8 @@ void UTFT::_set_direction_registers(byte mode)
 {
 	if (mode!=LATCHED_16)
 	{
-		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, 0x0f);
-		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, 0xf0);
+		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, 0x0f);
+		ROM_GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, 0xf0);
 
 		if (mode == 16) 
 		{
