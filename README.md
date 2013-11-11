@@ -11,10 +11,10 @@ Tested on S6D1121 in 8-bit mode and SSD1289 in 16-bit mode.
 http://forum.stellarisiti.com/topic/626-ssd1289-32-320x240-tft-16bit-parallel-interface-touch-libraries/ )
 
 * 8-bit mode:
-D0-D7=GND; D8-D15=PD0-3+PA4-7; RS=PC_6; WR=PC_5; CS=PC_7; RST=PC_4; RD=Pullup.
+D0-D7=GND; D8-D15=PD0-3, PA4-7; RS=PC_6; WR=PC_5; CS=PC_7; RST=PC_4; RD=Pullup.
 
 * 16-bit mode:
-D0-D7=PB0-PB7; D8-D15=PE0-3+PC4-7; RS=PA_5; WR=PA_7; CS=PA_6; RST=PD_6; RD=Pullup.
+D0-D7=PB0-PB7; D8-D15=PD0-3, PA4-7; RS=PC_6; WR=PC_5; CS=PC_7; RST=PC_4; RD=Pullup.
 
 ### Fraunchpad
 * 8-bit mode:
