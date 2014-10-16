@@ -9,8 +9,6 @@
 #define fontbyte(x) cfont.font[x]  
 
 #define pgm_read_word(data) *(data)
-#define pgm_read_byte(data) *(data)
-#define PROGMEM
 typedef volatile uint32_t regtype;
 typedef uint8_t regsize;
 typedef unsigned short* bitmapdatatype;
