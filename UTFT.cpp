@@ -533,7 +533,7 @@ void UTFT::fillRect(int x1, int y1, int x2, int y2)
 		_fast_fill_16(fch,fcl,((long(x2-x1)+1)*(long(y2-y1)+1)));
 		sbi(P_CS, B_CS);
 	}
-	else if ((display_transfer_mode==8) and (fch==fcl))
+	else if ((display_transfer_mode==8) && (fch==fcl))
 	{
 		cbi(P_CS, B_CS);
 		setXY(x1, y1, x2, y2);
@@ -705,7 +705,7 @@ void UTFT::fillScr(word color)
 		sbi(P_RS, B_RS);
 	if (display_transfer_mode==16)
 		_fast_fill_16(ch,cl,((disp_x_size+1)*(disp_y_size+1)));
-	else if ((display_transfer_mode==8) and (ch==cl))
+	else if ((display_transfer_mode==8) && (ch==cl))
 		_fast_fill_8(ch,((disp_x_size+1)*(disp_y_size+1)));
 	else
 	{
@@ -848,7 +848,7 @@ void UTFT::drawHLine(int x, int y, int l)
 		sbi(P_RS, B_RS);
 		_fast_fill_16(fch,fcl,l);
 	}
-	else if ((display_transfer_mode==8) and (fch==fcl))
+	else if ((display_transfer_mode==8) && (fch==fcl))
 	{
 		sbi(P_RS, B_RS);
 		_fast_fill_8(fch,l);
@@ -878,7 +878,7 @@ void UTFT::drawVLine(int x, int y, int l)
 		sbi(P_RS, B_RS);
 		_fast_fill_16(fch,fcl,l);
 	}
-	else if ((display_transfer_mode==8) and (fch==fcl))
+	else if ((display_transfer_mode==8) && (fch==fcl))
 	{
 		sbi(P_RS, B_RS);
 		_fast_fill_8(fch,l);
