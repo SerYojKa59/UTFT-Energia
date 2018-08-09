@@ -156,30 +156,21 @@
 #define VGA_PURPLE		0x8010
 #define VGA_TRANSPARENT	0xFFFFFFFF
 
-// FIXME (see comment below)
-#if defined(ENERGIA)
-	#include "Energia.h"
-	#if defined(__LM4F120H5QR__)
-		#include "hardware/lm4f/HW_LM4F_defines.h"
-	#elif defined(__MSP430__)
-		#include "hardware/msp430/HW_MSP430_defines.h"
-	#else
-		#error "unknown Energia target"
-	#endif
-#elif defined(ARDUINO)
-	#if defined(__AVR__)
-		#include "Arduino.h"
-		#include "hardware/avr/HW_AVR_defines.h"
-	#elif defined(__PIC32MX__)
-		#include "WProgram.h"
-		#include "hardware/pic32/HW_PIC32_defines.h"
-	#elif defined(__arm__)
-		#include "Arduino.h" // This will include energia.h where appropriate
-		#include "hardware/arm/HW_ARM_defines.h"
-	#elif defined(ESP_PLATFORM)
-		#include "Arduino.h"
-		#include "hardware/esp32/HW_ESP32_defines.h"
-	#endif
+#if defined(__AVR__)
+	#include "Arduino.h"
+	#include "hardware/avr/HW_AVR_defines.h"
+#elif defined(__PIC32MX__)
+	#include "WProgram.h"
+	#include "hardware/pic32/HW_PIC32_defines.h"
+#elif defined(__arm__)
+	#include "Arduino.h" // This will include energia.h where appropriate
+	#include "hardware/arm/HW_ARM_defines.h"
+#elif defined(__MSP430__)
+	#include "Arduino.h" // This will include energia.h where appropriate
+	#include "hardware/msp430/HW_MSP430_defines.h"
+#elif defined(ESP_PLATFORM)
+	#include "Arduino.h"
+	#include "hardware/esp32/HW_ESP32_defines.h"
 #endif
 
 struct _current_font

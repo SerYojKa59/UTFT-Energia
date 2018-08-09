@@ -83,7 +83,7 @@
 		#include "hardware/arm/HW_CC3200.h"
 	#elif defined(__LM4F120H5QR__)
 		#pragma message("Compiling for Stellarpad (LM4F120H5QR)...")
-		#include "hardware/lm4f/HW_LM4F120H5QR.h"
+		#include "hardware/arm/HW_LM4F120H5QR.h"
 	#else
 		#error "Unsupported ARM MCU!"
 	#endif
