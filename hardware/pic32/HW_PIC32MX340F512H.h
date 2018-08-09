@@ -89,6 +89,14 @@ void UTFT::LCD_Writ_Bus(char VH,char VL, byte mode)
 	}
 }
 
+void UTFT::LCD_Write_Bus_8(char VL)
+{
+	LATECLR = 0xFF;
+	LATESET = VL;
+	*P_WR &= ~B_WR;
+	*P_WR |= B_WR;
+}
+
 void UTFT::_set_direction_registers(byte mode)
 {
 	if (mode!=LATCHED_16)
@@ -133,7 +141,7 @@ void UTFT::_fast_fill_16(int ch, int cl, long pix)
 		*P_WR &= ~B_WR;	*P_WR |= B_WR;
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			*P_WR &= ~B_WR;	*P_WR |= B_WR;
 		}
@@ -167,7 +175,7 @@ void UTFT::_fast_fill_8(int ch, long pix)
 		*P_WR &= ~B_WR; *P_WR |= B_WR; *P_WR &= ~B_WR; *P_WR |= B_WR;
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			*P_WR &= ~B_WR; *P_WR |= B_WR; *P_WR &= ~B_WR; *P_WR |= B_WR;
 		}
