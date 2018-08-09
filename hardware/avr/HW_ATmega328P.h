@@ -90,6 +90,12 @@ void UTFT::LCD_Writ_Bus(char VH,char VL, byte mode)
 	}
 }
 
+void UTFT::LCD_Write_Bus_8(char VL)
+{
+    PORTD = VL;
+    pulse_low(P_WR, B_WR);
+}
+
 void UTFT::_set_direction_registers(byte mode)
 {
 	DDRD = 0xFF;
@@ -131,7 +137,7 @@ void UTFT::_fast_fill_16(int ch, int cl, long pix)
 		pulse_low(P_WR, B_WR);
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			pulse_low(P_WR, B_WR);
 		}
@@ -164,7 +170,7 @@ void UTFT::_fast_fill_8(int ch, long pix)
 		pulse_low(P_WR, B_WR);pulse_low(P_WR, B_WR);
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			pulse_low(P_WR, B_WR);pulse_low(P_WR, B_WR);
 		}

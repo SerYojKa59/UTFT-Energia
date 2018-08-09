@@ -115,6 +115,22 @@ void UTFT::LCD_Writ_Bus(char VH,char VL, byte mode)
 	}
 }
 
+void UTFT::LCD_Write_Bus_8(char VL)
+{
+#if defined(USE_UNO_SHIELD_ON_MEGA)
+    PORTG &= ~0x20;
+    PORTG |= (VL & 0x10)<<1;
+    PORTH &= ~0x18;
+    PORTH |= (VL & 0xC0)>>3;
+    PORTE &= ~0x3B;
+    PORTE |= (VL & 0x03) + ((VL & 0x0C)<<2) + ((VL & 0x20)>>2);
+    pulse_low(P_WR, B_WR);
+#else
+	PORTA = VL;
+	pulse_low(P_WR, B_WR);
+#endif
+}
+
 void UTFT::_set_direction_registers(byte mode)
 {
 #if defined(USE_UNO_SHIELD_ON_MEGA)
@@ -189,7 +205,7 @@ void UTFT::_fast_fill_16(int ch, int cl, long pix)
 		pulse_low(P_WR, B_WR);
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			pulse_low(P_WR, B_WR);
 		}
@@ -232,7 +248,7 @@ void UTFT::_fast_fill_8(int ch, long pix)
 		pulse_low(P_WR, B_WR);pulse_low(P_WR, B_WR);
 	}
 	if ((pix % 16) != 0)
-		for (int i=0; i<(pix % 16); i++)
+		for (int i=0; i<(pix % 16)+1; i++)
 		{
 			pulse_low(P_WR, B_WR);pulse_low(P_WR, B_WR);
 		}
