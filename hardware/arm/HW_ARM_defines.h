@@ -32,8 +32,10 @@
 
 #define fontbyte(x) cfont.font[x]  
 
+#ifndef pgm_read_word
 #define pgm_read_word(data) *data
 #define pgm_read_byte(data) *data
+#endif
 #define bitmapdatatype unsigned short*
 
 #if defined(TEENSYDUINO) && TEENSYDUINO >= 117
