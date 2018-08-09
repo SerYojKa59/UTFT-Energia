@@ -4,7 +4,12 @@ This is a port of Henning Karlsen's
 [UTFT library](http://www.rinkydinkelectronics.com/) to Energia Launchpads
 and ESP32.
 
-### Stellaris
+This version adds support for ARM-based Stellarpads (now discontinued) and
+msp430-based Launchpad and Fraunchpads.
+
+New! added support for ESP32-based Node32s (pinout [here](https://cdn.instructables.com/FOL/YWLI/JEOILQ5U/FOLYWLIJEOILQ5U.LARGE.jpg)).
+
+### Stellarpad
 Tested on S6D1121 in 8-bit mode and SSD1289 in 16-bit mode.
 (Update: now pin-compatible with Daniel Rebollo's boosterpack. See
 [here](
