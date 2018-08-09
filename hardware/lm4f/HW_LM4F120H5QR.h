@@ -1,6 +1,4 @@
 // *** Hardwarespecific functions ***
-#define portOutputRegister(x)	(regtype)portBASERegister(x)
-
 void UTFT::_hw_special_init()
 {
 	sbi(P_CS, B_CS);
@@ -178,7 +176,7 @@ void UTFT::_fast_fill_8(int ch, long pix)
 		}
 }
 
-void UTFT::_convert_float(char *buf, double num, int width, byte prec)
+volatile uint32_t* UTFT::portOutputRegister(int value)
 {
-	//	NYI
+        return portBASERegister(value);
 }
