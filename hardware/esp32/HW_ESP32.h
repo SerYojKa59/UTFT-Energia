@@ -1,12 +1,21 @@
 // 8-bit mode
-#define DB0	23
-#define DB1	22
-#define DB2	21
-#define DB3	19
-#define DB4	18
-#define DB5	17
-#define DB6	16
-#define DB7	4
+// #define DB0	23
+// #define DB1	22
+// #define DB2	21//13
+// #define DB3	19
+// #define DB4	18
+// #define DB5	17
+// #define DB6	16
+// #define DB7	4
+
+#define DB0	13
+#define DB1	15
+#define DB2	2
+#define DB3	0
+#define DB4	4
+#define DB5	16
+#define DB6	17
+#define DB7	5
 
 void UTFT::_hw_special_init()
 {

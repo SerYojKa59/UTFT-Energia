@@ -1,28 +1,28 @@
 /*
   UTFT.h - Multi-Platform library support for Color TFT LCD Boards
   Copyright (C)2015-2018 Rinky-Dink Electronics, Henning Karlsen. All right reserved
-  
+
   This library is the continuation of my ITDB02_Graph, ITDB02_Graph16
-  and RGB_GLCD libraries for Arduino and chipKit. As the number of 
-  supported display modules and controllers started to increase I felt 
-  it was time to make a single, universal library as it will be much 
+  and RGB_GLCD libraries for Arduino and chipKit. As the number of
+  supported display modules and controllers started to increase I felt
+  it was time to make a single, universal library as it will be much
   easier to maintain in the future.
 
-  Basic functionality of this library was origianlly based on the 
-  demo-code provided by ITead studio (for the ITDB02 modules) and 
+  Basic functionality of this library was origianlly based on the
+  demo-code provided by ITead studio (for the ITDB02 modules) and
   NKC Electronics (for the RGB GLCD module/shield).
 
-  This library supports a number of 8bit, 16bit and serial graphic 
-  displays, and will work with both Arduino, chipKit boards and select 
+  This library supports a number of 8bit, 16bit and serial graphic
+  displays, and will work with both Arduino, chipKit boards and select
   TI LaunchPads. For a full list of tested display modules and controllers,
   see the document UTFT_Supported_display_modules_&_controllers.pdf.
 
-  When using 8bit and 16bit display modules there are some 
-  requirements you must adhere to. These requirements can be found 
+  When using 8bit and 16bit display modules there are some
+  requirements you must adhere to. These requirements can be found
   in the document UTFT_Requirements.pdf.
   There are no special requirements when using serial displays.
 
-  You can find the latest version of the library at 
+  You can find the latest version of the library at
   http://www.RinkyDinkElectronics.com/
 
   This library is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@
   will allow commercial use. This includes using the library,
   modified or not, as a tool to sell products.
 
-  The license applies to all part of the library including the 
+  The license applies to all part of the library including the
   examples and tools supplied with the library.
 */
 
@@ -111,7 +111,7 @@
 #define ITDB28_V2_ALT   17  // ILI9341	(16bit)
 #define ITDB32S_V2      17  // ILI9341	(16bit)
 #define ITDB28_V2       18  // ILI9341	(8bit)
-#define ITDB24E_V2_8    18  // ILI9341	(8bit) 
+#define ITDB24E_V2_8    18  // ILI9341	(8bit)
 #define ELEE32_REVB		19	// SSD1289	(8bit)
 #define CTE70			20	// SSD1963	(16bit) 800x480 Alternative Init
 #define EHOUSE70		20	// SSD1963	(16bit) 800x480 Alternative Init
@@ -139,17 +139,17 @@
 //*********************************
 // VGA color palette
 #define VGA_BLACK		0x0000
-#define VGA_WHITE		0xFFFF
-#define VGA_RED			0xF800
-#define VGA_GREEN		0x0400
+#define VGA_WHITE		0xFFFF//белый
+#define VGA_RED			0xF800//розовый
+#define VGA_GREEN		0x0400//зелёный
 #define VGA_BLUE		0x001F
-#define VGA_SILVER		0xC618
+#define VGA_SILVER		0xC618//жёлтый синий
 #define VGA_GRAY		0x8410
-#define VGA_MAROON		0x8000
+#define VGA_MAROON		0x8000//красный
 #define VGA_YELLOW		0xFFE0
-#define VGA_OLIVE		0x8400
-#define VGA_LIME		0x07E0
-#define VGA_AQUA		0x07FF
+#define VGA_OLIVE		0x8400//оливковый
+#define VGA_LIME		0x07E0//светло зелённый красный
+#define VGA_AQUA		0x07FF//светло зелённый белый
 #define VGA_TEAL		0x0410
 #define VGA_NAVY		0x0010
 #define VGA_FUCHSIA		0xF81F
@@ -248,7 +248,7 @@ class UTFT
 		void LCD_Write_DATA(char VL);
 		void LCD_Write_COM_DATA(char com1,int dat1);
 		void LCD_Write_Bus_8(char VL);
-		void LCD_Write_DATA_8(char VL);		
+		void LCD_Write_DATA_8(char VL);
 		void _hw_special_init();
 		void setPixel(word color);
 		void drawHLine(int x, int y, int l);

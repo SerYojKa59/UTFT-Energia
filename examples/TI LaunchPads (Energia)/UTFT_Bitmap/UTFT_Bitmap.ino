@@ -16,7 +16,7 @@
 extern uint8_t SmallFont[];
 
 // Remember to change the model parameter to suit your display module!
-UTFT myGLCD(ITDB32S,15,18,11,32);
+UTFT myGLCD(HX8352A, 12, 14, 27, 26, 25);
 
 extern unsigned short info[0x400];
 extern unsigned short icon[0x400];
