@@ -5,10 +5,9 @@
 
 #define swap(type, i, j) {type t = i; i = j; j = t;}
 
-#define fontbyte(x) cfont.font[x]  
+#define fontbyte(x) cfont.font[x]
 
 #define PROGMEM
 #define regtype volatile uint32_t
 #define regsize uint32_t
 #define bitmapdatatype unsigned short*
-

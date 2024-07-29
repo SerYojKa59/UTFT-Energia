@@ -118,7 +118,7 @@ UTFT::UTFT(byte model, int RS, int WR, int CS, int RST, int SER)
 				  127, 319, 479, 799, 319, 319, 319, 319, 319, 319,		  // 10-19
 				  799, 479, 319, 219, 0, 319, 319, 479, 479, 479,		  // 20-29
 				  159};													  // 30-
-	byte dtm[] = {16, 16, 16, 8, 8, 16, 8, SERIAL_4PIN, 16, SERIAL_5PIN,  // 00-09
+	byte dtm[] = {16, 16, 16, 8, 8, 16, 8, SERIAL_4PIN, 8, SERIAL_5PIN,  // 00-09
 				  SERIAL_5PIN, 16, 16, 16, 8, 16, LATCHED_16, 16, 8, 8,	  // 10-19
 				  16, 16, 16, 8, 0, SERIAL_5PIN, SERIAL_4PIN, 16, 16, 16, // 20-29
 				  SERIAL_5PIN};											  // 30-
@@ -877,13 +877,14 @@ void UTFT::printChar(byte c, int x, int y)
 
 	cbi(P_CS, B_CS);
 
+	temp = ((c - cfont.offset) * ((cfont.x_size / 8) * cfont.y_size)) + 4;
+
 	if (!_transparent)
 	{
 		if (orient == PORTRAIT)
 		{
 			setXY(x, y, x + cfont.x_size - 1, y + cfont.y_size - 1);
 
-			temp = ((c - cfont.offset) * ((cfont.x_size / 8) * cfont.y_size)) + 4;
 			for (j = 0; j < ((cfont.x_size / 8) * cfont.y_size); j++)
 			{
 				ch = pgm_read_byte(&cfont.font[temp]);
@@ -903,8 +904,7 @@ void UTFT::printChar(byte c, int x, int y)
 		}
 		else
 		{
-			temp = ((c - cfont.offset) * ((cfont.x_size / 8) * cfont.y_size)) + 4;
-
+			/*
 			for (j = 0; j < ((cfont.x_size / 8) * cfont.y_size); j += (cfont.x_size / 8))
 			{
 				setXY(x, y + (j / (cfont.x_size / 8)), x + cfont.x_size - 1, y + (j / (cfont.x_size / 8)));
@@ -924,12 +924,28 @@ void UTFT::printChar(byte c, int x, int y)
 					}
 				}
 				temp += (cfont.x_size / 8);
+			}*/
+			for (j = 0; j < cfont.y_size; j++)
+			{
+				for (int zz = 0; zz < (cfont.x_size / 8); zz++)
+				{
+					ch = pgm_read_byte(&cfont.font[temp + zz]);
+					for (i = 0; i < 8; i++)
+					{
+
+						if ((ch & (1 << (7 - i))) != 0)
+						{
+							setXY(x + i + (zz * 8), y + j, x + i + (zz * 8) + 1, y + j + 1);
+							setPixel((fch << 8) | fcl);
+						}
+					}
+				}
+				temp += (cfont.x_size / 8);
 			}
 		}
 	}
 	else
 	{
-		temp = ((c - cfont.offset) * ((cfont.x_size / 8) * cfont.y_size)) + 4;
 		for (j = 0; j < cfont.y_size; j++)
 		{
 			for (int zz = 0; zz < (cfont.x_size / 8); zz++)
